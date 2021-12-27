@@ -1,0 +1,42 @@
+
+name: deploy to aliyun oss
+
+on:
+  push:
+    branches: [ hatedMe-patch-1 ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: use Node.js
+      uses: actions/setup-node@v2
+      with:
+        cache: 'yarn'
+        node-version: 12.x
+
+    # - name: yarn install and build
+    #   run: |
+    #     yarn install
+    #     yarn run deploy-prod
+    
+    # - name: setup aliyun oss
+    #   uses: manyuanrong/setup-ossutil@master
+    #   with:
+    #     endpoint: 'oss-cn-beijing.aliyuncs.com'
+    #     access-key-id: ${{ secrets.OSS_KEY_ID }}
+    #     access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+    # chmod 755 ossutil64
+    - name: setup aliyun oss
+      run: | 
+        cd /
+        sudo wget http://gosspublic.alicdn.com/ossutil/1.7.8/ossutil64  
+        pwd
+        ls -l
+        sudo chmod 755 ossutil64
+        ./ossutil64 config -e oss-cn-beijing.aliyuncs.com -i ${{ secrets.OSS_KEY_ID }} -k ${{ secrets.OSS_KEY_SECRET }}  -L CH 
+
+    - name: cp files to aliyun
+      run: ossutil cp -rf ./dist oss://pic-wechat/blog/
