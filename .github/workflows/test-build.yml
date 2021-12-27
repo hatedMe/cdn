@@ -31,7 +31,6 @@ jobs:
     # chmod 755 ossutil64
     - name: setup aliyun oss
       run: | 
-        cd /
         sudo wget http://gosspublic.alicdn.com/ossutil/1.7.8/ossutil64  
         pwd
         ls -l
